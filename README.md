@@ -1,79 +1,166 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# React Native Todo App
 
-# Getting Started
+A robust Todo application built with React Native, following SOLID principles and MVVM architecture. This project demonstrates best practices in TypeScript, state management, and clean architecture.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## 🏗 Architecture
 
-## Step 1: Start the Metro Server
+This project follows the MVVM (Model-View-ViewModel) architectural pattern and SOLID principles:
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+### Directory Structure
 
-To start Metro, run the following command from the _root_ of your React Native project:
-
-```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+```
+src/
+├── adapters/
+│   └── AsyncStorageAdapter.ts    # Storage implementation
+├── interfaces/
+│   ├── IStorage.ts              # Storage interface
+│   ├── ITodo.ts                 # Todo model interface
+│   └── ITodoRepository.ts       # Repository interface
+├── repositories/
+│   └── TodoRepository.ts        # Data persistence layer
+├── services/
+│   └── TodoService.ts           # Business logic layer
+├── viewModels/
+│   └── TodoViewModel.ts         # UI state management
+└── views/
+    ├── components/
+    │   ├── TodoItem.tsx         # Todo item component
+    │   └── TodoInput.tsx        # Input component
+    └── TodoList.tsx             # Main list component
 ```
 
-## Step 2: Start your Application
+### SOLID Principles Implementation
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+1. **Single Responsibility Principle**
+   - Each class has a single responsibility
+   - Clear separation between data, business logic, and UI
 
-### For Android
+2. **Open/Closed Principle**
+   - Classes are open for extension but closed for modification
+   - Interfaces allow for easy implementation of new features
 
+3. **Liskov Substitution Principle**
+   - All implementations can be substituted for their base interfaces
+   - Strong typing ensures compatibility
+
+4. **Interface Segregation Principle**
+   - Specific interfaces for specific needs
+   - No client depends on interfaces they don't use
+
+5. **Dependency Inversion Principle**
+   - High-level modules don't depend on low-level modules
+   - Dependencies are injected through constructors
+
+## 🚀 Features
+
+- Create, Read, Update, and Delete todos
+- Persistent storage using AsyncStorage
+- Edit mode for todos
+- Toggle todo completion status
+- Clean and intuitive UI
+- Type-safe implementation
+- Error handling
+- Loading states
+
+## 🛠 Technologies
+
+- React Native
+- TypeScript
+- MobX (State Management)
+- AsyncStorage
+- Jest (Testing)
+
+## 📦 Installation
+
+1. Clone the repository:
 ```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+git clone https://github.com/yourusername/react-native-todo-app.git
 ```
 
-### For iOS
-
+2. Install dependencies:
 ```bash
-# using npm
+cd react-native-todo-app
+npm install
+```
+
+3. Run the app:
+```bash
+# For iOS
 npm run ios
 
-# OR using Yarn
-yarn ios
+# For Android
+npm run android
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+## 💻 Usage
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+### Adding a Todo
+```typescript
+// Through the ViewModel
+await todoViewModel.addTodo('New todo item');
+```
 
-## Step 3: Modifying your App
+### Editing a Todo
+```typescript
+// Through the ViewModel
+await todoViewModel.editTodo(todoId, 'Updated todo text');
+```
 
-Now that you have successfully run the app, let's modify it.
+### Toggling a Todo
+```typescript
+// Through the ViewModel
+await todoViewModel.toggleTodo(todoId);
+```
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+### Deleting a Todo
+```typescript
+// Through the ViewModel
+await todoViewModel.deleteTodo(todoId);
+```
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+## 🧪 Testing
 
-## Congratulations! :tada:
+Run the test suite:
+```bash
+npm test
+```
 
-You've successfully run and modified your React Native App. :partying_face:
+## 🔄 Data Flow
 
-### Now what?
+1. User interacts with View
+2. View calls ViewModel methods
+3. ViewModel calls Service methods
+4. Service processes business logic
+5. Repository handles data persistence
+6. Changes flow back up the chain
+7. MobX updates the UI automatically
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+## 🛡 Error Handling
 
-# Troubleshooting
+The application implements comprehensive error handling:
+- Service layer catches and processes errors
+- ViewModel maintains error state
+- UI displays error messages when necessary
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## 🎯 Best Practices
 
-# Learn More
+- Dependency Injection
+- Interface-based programming
+- Clean Architecture principles
+- SOLID principles
+- Type safety
+- Error handling
+- Code organization
+- Component reusability
 
-To learn more about React Native, take a look at the following resources:
+## 📝 License
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+MIT License - see LICENSE.md
+
+## 👥 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
