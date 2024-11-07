@@ -2,16 +2,28 @@
  * @format
  */
 
-import 'react-native';
 import React from 'react';
+import { create } from 'react-test-renderer';
 import App from '../App';
 
-// Note: import explicitly to use the types shipped with jest.
-import {it} from '@jest/globals';
+// Mock the TodoList component
+jest.mock('../src/views/TodoList', () => ({
+  TodoList: () => null
+}));
 
-// Note: test renderer must be required after react-native.
-import renderer from 'react-test-renderer';
+// Mock TodoViewModel
+jest.mock('../src/viewModels/TodoViewModel', () => ({
+  TodoViewModel: jest.fn().mockImplementation(() => ({
+    todos: [],
+    isLoading: false,
+    error: null,
+    loadTodos: jest.fn()
+  }))
+}));
 
-it('renders correctly', () => {
-  renderer.create(<App />);
+describe('App', () => {
+  it('renders correctly', () => {
+    const tree = create(<App />).toJSON();
+    expect(tree).toBeTruthy();
+  });
 });
