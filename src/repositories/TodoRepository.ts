@@ -1,46 +1,33 @@
-import { ITodoRepository } from '../interfaces/ITodoRepository';
+// src/repositories/TodoRepository.ts
 import { ITodo } from '../interfaces/ITodo';
-import { IStorage } from '../interfaces/IStorage';
+import { AsyncStorageAdapter } from '../adapters/AsyncStorageAdapter';
 
-export class TodoRepository implements ITodoRepository {
-  private readonly STORAGE_KEY = '@todos';
+export class TodoRepository {
   private todos: ITodo[] = [];
+  private readonly STORAGE_KEY = 'todos'; // Ensure this is the correct key
 
-  constructor(private storage: IStorage) {}
-
-  private async persistTodos(): Promise<void> {
-    await this.storage.setItem(this.STORAGE_KEY, JSON.stringify(this.todos));
-  }
+  constructor(private storage: AsyncStorageAdapter) {}
 
   async getTodos(): Promise<ITodo[]> {
-    try {
-      const storedTodos = await this.storage.getItem(this.STORAGE_KEY);
-      this.todos = storedTodos ? JSON.parse(storedTodos) : [];
-      return this.todos;
-    } catch (error) {
-      console.error('Error loading todos:', error);
-      return [];
-    }
+    const todosJson = await this.storage.getItem(this.STORAGE_KEY);
+    this.todos = todosJson ? JSON.parse(todosJson) : [];
+    return this.todos;
   }
 
   async saveTodo(todo: Omit<ITodo, 'id'>): Promise<ITodo> {
-    const newTodo: ITodo = {
-      id: Math.random().toString(36).substr(2, 9),
-      ...todo
-    };
-
+    const newTodo: ITodo = { ...todo, id: this.generateId() };
     this.todos.push(newTodo);
     await this.persistTodos();
     return newTodo;
   }
 
-  async updateTodo(todo: ITodo): Promise<ITodo> {
-    const index = this.todos.findIndex(t => t.id === todo.id);
+  async updateTodo(updatedTodo: ITodo): Promise<ITodo> {
+    const index = this.todos.findIndex(todo => todo.id === updatedTodo.id);
     if (index === -1) throw new Error('Todo not found');
 
-    this.todos[index] = todo;
+    this.todos[index] = updatedTodo;
     await this.persistTodos();
-    return todo;
+    return updatedTodo;
   }
 
   async deleteTodo(id: string): Promise<void> {
@@ -49,5 +36,13 @@ export class TodoRepository implements ITodoRepository {
 
     this.todos.splice(index, 1);
     await this.persistTodos();
+  }
+
+  private async persistTodos(): Promise<void> {
+    await this.storage.setItem(this.STORAGE_KEY, JSON.stringify(this.todos));
+  }
+
+  private generateId(): string {
+    return Math.random().toString(36).substr(2, 9);
   }
 }
